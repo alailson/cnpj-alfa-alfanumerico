@@ -13,20 +13,21 @@ public final class CnpjValidator {
 	// this method should work for legacy-code systems that use older versions of Java (7 or lower)
 	/**
 	 * This method should work for legacy-code systems that use older versions of Java (7 or lower).
-	 * Basic cnpj validation. Tries to avoid mutation as much as possible.
+	 * Basic cnpj validation (works for alphanumeric CNPJs). Tries to avoid mutation as much as possible.
 	 * 
-	 * @param cnpj
+	 * @param cnpj a CNPJ to be validated
 	 * @return <code>true</code> if cnpj is a valid CNPJ, <code>false</code> otherwise
 	 */
 	public static boolean validarCnpjJava7ouMenor(final String cnpj) {
-		final char[] charsArray = cnpj.toCharArray();
-		final int[] cnpjIntValues = new int[charsArray.length];
+		final char[] cnpjChars = cnpj.toCharArray();
+		final int[] cnpjIntValues = new int[cnpjChars.length];
 
-		for (int index = 0; index < charsArray.length; index++) {
-			cnpjIntValues[index] = charsArray[index] - 48;
+		for (int index = 0; index < cnpjChars.length; index++) {
+			cnpjIntValues[index] = cnpjChars[index] - 48;
 		}
 
-		return calcularPrimeiroDigitoVerificador(cnpjIntValues) == cnpjIntValues[12] && calcularSegundoDigitoVerificador(cnpjIntValues) == cnpjIntValues[13];
+		return calcularPrimeiroDigitoVerificador(cnpjIntValues) == cnpjIntValues[12]
+				&& calcularSegundoDigitoVerificador(cnpjIntValues) == cnpjIntValues[13];
 	}
 
 	// to compute the first verification digit

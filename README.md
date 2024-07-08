@@ -1,6 +1,6 @@
 # CNPJ Alfanumérico
 
-Java code for CNPJ validation
+Java code for CNPJ Alphanumeric validation
 
 THE BEER-WARE LICENSE Revision 42
  - https://en.wikipedia.org/wiki/Beerware

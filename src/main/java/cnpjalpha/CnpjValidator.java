@@ -31,7 +31,7 @@ public final class CnpjValidator {
 	 * @param cnpj a CNPJ to be validated
 	 * @return <code>true</code> if cnpj is a valid CNPJ, <code>false</code> otherwise
 	 */
-	public static boolean validarCnpj(final String cnpj) {
+	public static boolean validateCnpj(final String cnpj) {
 		if(cnpj == null) {
 			return false;
 		}
@@ -44,12 +44,11 @@ public final class CnpjValidator {
 			return false;
 		}
 
-		return calcularPrimeiroDigitoVerificador(cnpjIntValues) == cnpjIntValues[12]
-				&& calcularSegundoDigitoVerificador(cnpjIntValues) == cnpjIntValues[13];
+		return computeFirstVerificationDigit(cnpjIntValues) == cnpjIntValues[12]
+				&& computeSecondVerificationDigit(cnpjIntValues) == cnpjIntValues[13];
 	}
 	
-	// to compute the first verification digit
-	private static int calcularPrimeiroDigitoVerificador(final int[] cnpj) {
+	private static int computeFirstVerificationDigit(final int[] cnpj) {
 		final int fator1 = 5 * cnpj[0] + 4 * cnpj[1] + 3 * cnpj[2] + 2 * cnpj[3]
 				+ 9 * cnpj[4] + 8 * cnpj[5] + 7 * cnpj[6] + 6 * cnpj[7] + 5 * cnpj[8]
 				+ 4 * cnpj[9] + 3 * cnpj[10] + 2 * cnpj[11];
@@ -57,9 +56,8 @@ public final class CnpjValidator {
 
 		return fator2 >= 10 ? 0 : fator2;
 	}
-
-	// to compute the second verification digit
-	private static int calcularSegundoDigitoVerificador(final int[] cnpj) {
+	
+	private static int computeSecondVerificationDigit(final int[] cnpj) {
 		final int fator1 = 6 * cnpj[0] + 5 * cnpj[1] + 4 * cnpj[2] + 3 * cnpj[3]
 				+ 2 * cnpj[4] + 9 * cnpj[5] + 8 * cnpj[6] + 7 * cnpj[7] + 6 * cnpj[8]
 				+ 5 * cnpj[9] + 4 * cnpj[10] + 3 * cnpj[11] + 2 * cnpj[12];

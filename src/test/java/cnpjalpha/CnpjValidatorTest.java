@@ -33,8 +33,8 @@ public class CnpjValidatorTest {
 	}
 	
 	@Test
-	public void testValidarCnpj() {
-		cnpjsAllValid.forEach(cnpj -> assertTrue(CnpjValidator.validarCnpj(cnpj)));
-		cnpjsToFailValidation.forEach(cnpj -> assertFalse(CnpjValidator.validarCnpj(cnpj)));
+	public void testValidateCnpj() {
+		cnpjsAllValid.forEach(cnpj -> assertTrue(CnpjValidator.validateCnpj(cnpj)));
+		cnpjsToFailValidation.forEach(cnpj -> assertFalse(CnpjValidator.validateCnpj(cnpj)));
 	}
 }

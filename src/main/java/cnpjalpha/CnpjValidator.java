@@ -8,7 +8,21 @@
  */
 package cnpjalpha;
 
+/**
+ * A CNPJ Validator.
+ * It works also for alphanumeric CNPJs.
+ * Feel free to use only the public methods that suits better for your environment. Delete the others.
+ * 
+ * @author Alailson Bolzon Alonso
+ */
 public final class CnpjValidator {
+	
+	private static final String ALL_ZEROS = "00000000000000";
+
+	// This is an Util Class, should never be instantiated.
+	private CnpjValidator() {
+		throw new AssertionError();
+	}
 
 	/**
 	 * This method should work for legacy-code systems that use older versions of Java (7 or lower).
@@ -18,6 +32,9 @@ public final class CnpjValidator {
 	 * @return <code>true</code> if cnpj is a valid CNPJ, <code>false</code> otherwise
 	 */
 	public static boolean validarCnpjJava7ouMenor(final String cnpj) {
+		if(ALL_ZEROS.equals(cnpj))
+			return false;
+		
 		final char[] cnpjChars = cnpj.toCharArray();
 		final int[] cnpjIntValues = new int[cnpjChars.length];
 
@@ -37,6 +54,9 @@ public final class CnpjValidator {
 	 * @return <code>true</code> if cnpj is a valid CNPJ, <code>false</code> otherwise
 	 */
 	public static boolean validarCnpjJava9(final String cnpj) {
+		if(ALL_ZEROS.equals(cnpj))
+			return false;
+		
 		final int[] cnpjIntValues = cnpj.chars().map(c -> c - 48).toArray();
 		
 		return calcularPrimeiroDigitoVerificador(cnpjIntValues) == cnpjIntValues[12]

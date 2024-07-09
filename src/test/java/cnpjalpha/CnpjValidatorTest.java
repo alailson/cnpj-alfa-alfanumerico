@@ -36,4 +36,9 @@ public class CnpjValidatorTest {
 			assertTrue(CnpjValidator.validarCnpjJava7ouMenor(cnpj));
 		}
 	}
+	
+	@Test
+	public void testValidarCnpjJava9() {
+		cnpjsAllValid.forEach(cnpj -> assertTrue(CnpjValidator.validarCnpjJava9(cnpj)));
+	}
 }

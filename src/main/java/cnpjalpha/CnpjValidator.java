@@ -10,7 +10,6 @@ package cnpjalpha;
 
 public final class CnpjValidator {
 
-	// this method should work for legacy-code systems that use older versions of Java (7 or lower)
 	/**
 	 * This method should work for legacy-code systems that use older versions of Java (7 or lower).
 	 * Basic cnpj validation (works for alphanumeric CNPJs). Tries to avoid mutation as much as possible.
@@ -26,6 +25,20 @@ public final class CnpjValidator {
 			cnpjIntValues[index] = cnpjChars[index] - 48;
 		}
 
+		return calcularPrimeiroDigitoVerificador(cnpjIntValues) == cnpjIntValues[12]
+				&& calcularSegundoDigitoVerificador(cnpjIntValues) == cnpjIntValues[13];
+	}
+	
+	/**
+	 * Use this method if you are usigin Java 9+.
+	 * Basic cnpj validation (works for alphanumeric CNPJs). Tries to avoid mutation as much as possible.
+	 * 
+	 * @param cnpj a CNPJ to be validated
+	 * @return <code>true</code> if cnpj is a valid CNPJ, <code>false</code> otherwise
+	 */
+	public static boolean validarCnpjJava9(final String cnpj) {
+		final int[] cnpjIntValues = cnpj.chars().map(c -> c - 48).toArray();
+		
 		return calcularPrimeiroDigitoVerificador(cnpjIntValues) == cnpjIntValues[12]
 				&& calcularSegundoDigitoVerificador(cnpjIntValues) == cnpjIntValues[13];
 	}

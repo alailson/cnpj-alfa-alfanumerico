@@ -40,7 +40,7 @@ public final class CnpjValidator {
 		
 		try {
 			cnpjIntValues = normalizeCnpj(cnpj);
-		} catch(ArrayIndexOutOfBoundsException e) {
+		} catch(RuntimeException aioobe) {
 			return false;
 		}
 
@@ -70,14 +70,21 @@ public final class CnpjValidator {
 	private static int[] normalizeCnpj(final String cnpj) {
 		final int[] cnpjIntValues = new int[CNPJ_SIZE];
 		int intValuesIndex = 0;
+		int sumOfValues = 0;
 		
 		for (char character : cnpj.toCharArray()) {
 			char toUpperCase = Character.toUpperCase(character);
 			
 			if(isCharNumberOrUpperCaseLetter(toUpperCase)) {
-				cnpjIntValues[intValuesIndex] = toUpperCase - 48;
+				int value = toUpperCase - 48;
+				cnpjIntValues[intValuesIndex] = value;
+				sumOfValues += value;
 				intValuesIndex++;
 			}
+		}
+		
+		if(sumOfValues == 0) {
+			throw new IllegalArgumentException();
 		}
 		
 		if(intValuesIndex < CNPJ_SIZE) {

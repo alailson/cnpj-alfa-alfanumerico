@@ -14,31 +14,27 @@ import static org.junit.jupiter.api.Assertions.*;
 public class CnpjValidatorTest {
 
 	private static final List<String> cnpjsAllValid;
+	private static final List<String> cnpjsToFailValidation;
 
 	static {
-		cnpjsAllValid = readAllLinesFromFile();
+		cnpjsAllValid = readAllLinesFromFile("valid_cnpjs");
+		cnpjsToFailValidation = readAllLinesFromFile("invalid_cnpjs");
 	}
 
 	public CnpjValidatorTest() {
 	}
 
-	public static List<String> readAllLinesFromFile() {
-		try (Stream<String> lines = Files.lines(Paths.get(ClassLoader.getSystemResource("valid_cnpjs").toURI()))) {
+	public static List<String> readAllLinesFromFile(final String name) {
+		try (Stream<String> lines = Files.lines(Paths.get(ClassLoader.getSystemResource(name).toURI()))) {
 			return lines.collect(Collectors.toList());
 		} catch (IOException | URISyntaxException e) {
 			return Collections.emptyList();
 		}
 	}
-
-	@Test
-	public void testValidarCnpjJava7ouMenor() {
-		for (String cnpj : cnpjsAllValid) {
-			assertTrue(CnpjValidator.validarCnpjJava7ouMenor(cnpj));
-		}
-	}
 	
 	@Test
-	public void testValidarCnpjJava9() {
-		cnpjsAllValid.forEach(cnpj -> assertTrue(CnpjValidator.validarCnpjJava9(cnpj)));
+	public void testValidarCnpj() {
+		cnpjsAllValid.forEach(cnpj -> assertTrue(CnpjValidator.validarCnpj(cnpj)));
+		cnpjsToFailValidation.forEach(cnpj -> assertFalse(CnpjValidator.validarCnpj(cnpj)));
 	}
 }

@@ -17,7 +17,7 @@ package cnpjalpha;
  */
 public final class CnpjValidator {
 	
-	private static final String ALL_ZEROS = "00000000000000";
+	private final static int CNPJ_SIZE = 14;
 
 	// This is an Util Class, should never be instantiated.
 	private CnpjValidator() {
@@ -25,44 +25,29 @@ public final class CnpjValidator {
 	}
 
 	/**
-	 * This method should work for legacy-code systems that use older versions of Java (7 or lower).
+	 * This method should work even for legacy-code systems that use older versions of Java.
 	 * Basic cnpj validation (works for alphanumeric CNPJs). Tries to avoid mutation as much as possible.
 	 * 
 	 * @param cnpj a CNPJ to be validated
 	 * @return <code>true</code> if cnpj is a valid CNPJ, <code>false</code> otherwise
 	 */
-	public static boolean validarCnpjJava7ouMenor(final String cnpj) {
-		if(ALL_ZEROS.equals(cnpj))
+	public static boolean validarCnpj(final String cnpj) {
+		if(cnpj == null) {
 			return false;
+		}
 		
-		final char[] cnpjChars = cnpj.toCharArray();
-		final int[] cnpjIntValues = new int[cnpjChars.length];
-
-		for (int index = 0; index < cnpjChars.length; index++) {
-			cnpjIntValues[index] = cnpjChars[index] - 48;
+		final int[] cnpjIntValues;
+		
+		try {
+			cnpjIntValues = normalizeCnpj(cnpj);
+		} catch(ArrayIndexOutOfBoundsException e) {
+			return false;
 		}
 
 		return calcularPrimeiroDigitoVerificador(cnpjIntValues) == cnpjIntValues[12]
 				&& calcularSegundoDigitoVerificador(cnpjIntValues) == cnpjIntValues[13];
 	}
 	
-	/**
-	 * Use this method if you are usigin Java 9+.
-	 * Basic cnpj validation (works for alphanumeric CNPJs). Tries to avoid mutation as much as possible.
-	 * 
-	 * @param cnpj a CNPJ to be validated
-	 * @return <code>true</code> if cnpj is a valid CNPJ, <code>false</code> otherwise
-	 */
-	public static boolean validarCnpjJava9(final String cnpj) {
-		if(ALL_ZEROS.equals(cnpj))
-			return false;
-		
-		final int[] cnpjIntValues = cnpj.chars().map(c -> c - 48).toArray();
-		
-		return calcularPrimeiroDigitoVerificador(cnpjIntValues) == cnpjIntValues[12]
-				&& calcularSegundoDigitoVerificador(cnpjIntValues) == cnpjIntValues[13];
-	}
-
 	// to compute the first verification digit
 	private static int calcularPrimeiroDigitoVerificador(final int[] cnpj) {
 		final int fator1 = 5 * cnpj[0] + 4 * cnpj[1] + 3 * cnpj[2] + 2 * cnpj[3]
@@ -81,5 +66,32 @@ public final class CnpjValidator {
 		final int fator2 = 11 - (fator1 % 11);
 
 		return fator2 >= 10 ? 0 : fator2;
+	}
+	
+	// All invalid characters are removed, Letters to upper case and the array is filled with leading zeros if needed.
+	private static int[] normalizeCnpj(final String cnpj) {
+		final int[] cnpjIntValues = new int[CNPJ_SIZE];
+		int intValuesIndex = 0;
+		
+		for (char character : cnpj.toCharArray()) {
+			char toUpperCase = Character.toUpperCase(character);
+			
+			if(isCharNumberOrUpperCaseLetter(toUpperCase)) {
+				cnpjIntValues[intValuesIndex] = toUpperCase - 48;
+				intValuesIndex++;
+			}
+		}
+		
+		if(intValuesIndex < CNPJ_SIZE) {
+			final int[] cnpjIntValuesShifted = new int[CNPJ_SIZE];
+			System.arraycopy(cnpjIntValues, 0, cnpjIntValuesShifted, CNPJ_SIZE - intValuesIndex, intValuesIndex);
+			return cnpjIntValuesShifted;
+		}
+		
+		return cnpjIntValues;
+	}
+	
+	private static boolean isCharNumberOrUpperCaseLetter(char c) {
+		return (c >= 48 && c <= 57) || (c >= 65 && c <= 90);
 	}
 }
